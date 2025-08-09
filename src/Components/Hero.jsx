@@ -15,7 +15,7 @@ function Hero() {
     });
 
     const tl = gsap.timeline();
-    tl.from(titleRef.current, { y: 50, opacity: 0, duration: 1, ease: "power3.out" })
+    tl.from(titleRef.current, { y: -50, opacity: 0, duration: 1, ease: "power3.out" })
       .from(subtitleRef.current, { y: 30, opacity: 0, duration: 0.8, ease: "power3.out" }, "-=0.5")
       .from(buttonRef.current, { y: 20, opacity: 0, duration: 0.6, ease: "power3.out" }, "-=0.3")
       .from(imageRef.current, { x: 100, opacity: 0, duration: 1, ease: "power3.out" }, "-=0.8");

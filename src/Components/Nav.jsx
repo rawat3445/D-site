@@ -1,19 +1,58 @@
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-import { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { useRef } from "react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 function Nav() {
   const container = useRef();
+  const navItems = useRef([]);
+  const mobileMenu = useRef();
+  const [isOpen, setIsOpen] = useState(false);
 
   useGSAP(() => {
-    gsap.from(container.current, {
-      y: -10,
+    const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+    // Step 1: Animate navbar container
+    tl.from(container.current, {
+      y: -50,
       opacity: 0,
-      duration: 1.4,
-      ease: 'power2.inOut',
+      duration: 1,
     });
+
+    // Step 2: Animate nav items with stagger
+    tl.from(
+      navItems.current,
+      {
+        y: -50,
+        opacity: 0,
+        stagger: 0.15,
+      },
+      "-=0.4" // start slightly before previous finishes
+    );
   }, []);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+
+    if (!isOpen) {
+      gsap.fromTo(
+        mobileMenu.current,
+        { x: "100%", opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.4, ease: "power2.out" }
+      );
+    } else {
+      gsap.to(mobileMenu.current, { x: "100%", opacity: 0, duration: 0.4 });
+    }
+  };
+
+  const links = [
+    { name: "Home", path: "/" },
+    { name: "Collections", path: "/collections" },
+    { name: "Interior Ideas", path: "/interior" },
+    { name: "Shop", path: "/shop" },
+    { name: "Contact", path: "/contact" },
+  ];
 
   return (
     <nav className="h-20 bg-[#F8F5F0] shadow-md sticky top-0 z-50">
@@ -26,11 +65,25 @@ function Nav() {
 
         {/* Navigation Links */}
         <ul className="flex space-x-8 text-lg font-medium text-[#2E2E2E]">
-          <li><Link to="/" className="hover:text-[#C19A6B] transition">Home</Link></li>
-          <li><Link to="/collections" className="hover:text-[#C19A6B] transition">Collections</Link></li>
-          <li><Link to="/interior" className="hover:text-[#C19A6B] transition">Interior Ideas</Link></li>
-          <li><Link to="/shop" className="hover:text-[#C19A6B] transition">Shop</Link></li>
-          <li><Link to="/contact" className="hover:text-[#C19A6B] transition">Contact</Link></li>
+          {["Home", "Collections", "Interior Ideas", "Shop", "Contact"].map(
+            (text, index) => (
+              <li
+                key={text}
+                ref={(el) => (navItems.current[index] = el)}
+              >
+                <Link
+                  to={
+                    text === "Home"
+                      ? "/"
+                      : "/" + text.toLowerCase().replace(" ", "")
+                  }
+                  className="hover:text-[#C19A6B] transition"
+                >
+                  {text}
+                </Link>
+              </li>
+            )
+          )}
         </ul>
       </div>
     </nav>
