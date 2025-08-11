@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import IntroBg from "../assets/Intro.png";
 
 export default function IntroScreen({ onComplete }) {
     const overlayRef = useRef();
@@ -41,7 +42,7 @@ export default function IntroScreen({ onComplete }) {
             ref={overlayRef}
             className="fixed inset-0 z-50 flex items-center justify-center"
             style={{
-                backgroundImage: "url('/src/assets/Intro.png')", // your generated image
+                backgroundImage: `url(${IntroBg})` , // your generated image
                 backgroundRepeat: "no-repeat", // controls zoom
                 backgroundSize: "cover", // can use 'contain' if you want full image shown
                 backgroundPosition: "center",
