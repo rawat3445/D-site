@@ -31,7 +31,7 @@ function Hero() {
           Crafting beautiful experiences with modern design and technology.
         </p>
         <button
-          ref={buttonRef}
+          
           className="bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-red-600 transition"
         >
           Get Started
