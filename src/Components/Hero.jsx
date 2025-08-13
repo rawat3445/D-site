@@ -25,7 +25,7 @@ function Hero() {
     <section className="min-h-screen flex flex-col md:flex-row items-center justify-between px-10 py-20 bg-gray-50 relative overflow-hidden">
       <div className="max-w-lg space-y-4 z-10">
         <h1 ref={titleRef} className="text-5xl font-bold text-gray-900">
-          Welcome to <span className="text-red-500">DECORE</span>
+          Welcome to <span className="text-red-500">Sanctum Design</span>
         </h1>
         <p ref={subtitleRef} className="text-lg text-gray-600">
           Crafting beautiful experiences with modern design and technology.

@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import SanctumDesignLogo from "../Pages/SanctumDesignLogo";
 import { useGSAP } from "@gsap/react";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
@@ -44,7 +45,9 @@ function Nav() {
         className="h-20 flex items-center justify-between px-6 md:px-12"
       >
         {/* Logo */}
-        <h1 className="text-2xl font-bold text-[#8B5E3C]">DECORE</h1>
+        <h1>
+          <SanctumDesignLogo/>
+        </h1>
 
         {/* Desktop Links */}
         <ul className="hidden md:flex space-x-8 text-lg font-medium text-[#2E2E2E]">

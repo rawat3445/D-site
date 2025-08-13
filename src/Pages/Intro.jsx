@@ -34,7 +34,7 @@ export default function IntroScreen({ onComplete }) {
             });
     }, [onComplete]);
 
-    const sentence = "Design Comfort Perfection With DECORE";
+    const sentence = "Design Comfort Perfection With Sanctum Design";
     const words = sentence.split(" ");
 
     return (
@@ -42,9 +42,9 @@ export default function IntroScreen({ onComplete }) {
             ref={overlayRef}
             className="fixed inset-0 z-50 flex items-center justify-center"
             style={{
-                backgroundImage: `url(${IntroBg})` , // your generated image
-                backgroundRepeat: "no-repeat", // controls zoom
-                backgroundSize: "cover", // can use 'contain' if you want full image shown
+                backgroundImage: `url(${IntroBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
                 backgroundPosition: "center",
                 fontFamily: "'Playfair Display', serif",
             }}
@@ -55,8 +55,8 @@ export default function IntroScreen({ onComplete }) {
                 className="text-4xl md:text-5xl font-semibold tracking-wide text-gray-800 text-center px-4"
                 style={{
                     maxWidth: "70%",
-                    color: "#5B4636", // warm brown to match furniture lines
-                    textShadow: "2px 2px 6px rgba(255,255,255,0.8)", // makes text readable without a box
+                    color: "#5B4636",
+                    textShadow: "2px 2px 6px rgba(255,255,255,0.8)",
                     padding: "10px 20px",
                     borderRadius: "10px",
                 }}
@@ -64,8 +64,11 @@ export default function IntroScreen({ onComplete }) {
                 {words.map((word, i) => (
                     <span
                         key={i}
-                        className={`inline-block mr-2 ${word === "DECORE" ? "text-red-600 font-bold" : ""
-                            }`}
+                        className={`inline-block mr-2 ${
+                            (i === words.length - 2 || i === words.length - 1) 
+                                ? "text-red-600 font-bold" 
+                                : ""
+                        }`}
                     >
                         {word}
                     </span>
