@@ -48,31 +48,51 @@ function Home() {
     const marqueeRef = useRef(null);
     const directionRef = useRef(1);
 
-    useEffect(() => {
-        const marquee = marqueeRef.current;
+    // --- useEffect for seamless loop + scroll-direction control ---
+useEffect(() => {
+  const el = marqueeRef.current;
+  if (!el) return;
 
-        const tween = gsap.to(marquee, {
-            x: "-50%",
-            duration: 20,
-            ease: "linear",
-            repeat: -1
-        });
+  // create looping tween using xPercent and wrap - works well with duplicated content
+  const tween = gsap.to(el, {
+    xPercent: -50,            // move left by half the track (since we duplicated logos)
+    duration: 15,             // adjust speed here
+    ease: "linear",
+    repeat: -1,
+    modifiers: {
+      // wrap xPercent between -50 and 0 so it never snaps back
+      xPercent: gsap.utils.wrap(-50, 0)
+    }
+  });
 
-        let lastScroll = window.scrollY;
-        const onScroll = () => {
-            const newScroll = window.scrollY;
-            tween.timeScale(newScroll > lastScroll ? 1 : -1);
-            lastScroll = newScroll;
-        };
+  // ensure it is running immediately
+  tween.timeScale(1);
 
-        window.addEventListener("scroll", onScroll);
-        return () => window.removeEventListener("scroll", onScroll);
-    }, []);
+  // keep previous scroll pos to detect direction
+  let lastScroll = window.scrollY;
+  const onScroll = () => {
+    const newScroll = window.scrollY;
+    // 1 => forward, -1 => reverse. You can use other speeds.
+    const dir = newScroll > lastScroll ? 1 : -1;
+    tween.timeScale(dir);
+    lastScroll = newScroll;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => tween.timeScale(1), 200);
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  return () => {
+    window.removeEventListener("scroll", onScroll);
+    tween.kill();
+  };
+}, []);
+
 
 
 
     return (
-        <div className="bg-gray-50">
+        <div className="bg-gray-50 overflow-x-hidden">
             {/* Hero Section (Untouched) */}
             <Hero />
 
@@ -164,33 +184,36 @@ function Home() {
                 </a>
             </section>
 
-            <section className="py-12 bg-white border-y-4 border-red-500 shadow-lg overflow-hidden">
-  {/* Heading */}
-  <div className="text-center mb-8">
-    <h2 className="text-3xl font-bold text-gray-800">
-      Our Trusted Partners
-    </h2>
-    <p className="text-gray-500 mt-2">
-      Collaborating with industry leaders to bring your dream spaces to life.
-    </p>
-  </div>
+            <section className="py-12 bg-white border-y-4 border-red-500 shadow-lg">
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-gray-800">Our Trusted Partners</h2>
+                    <p className="text-gray-500 mt-2">Collaborating with industry leaders to bring your dream spaces to life.</p>
+                </div>
 
-  {/* Marquee Container */}
-  <div ref={marqueeRef} className="flex gap-8">
-    {[...logos, ...logos].map((logo, idx) => (
-      <div
-        key={idx}
-        className="flex items-center justify-center p-4 border border-red-300 rounded-xl bg-gray-50 hover:shadow-md transition"
-      >
-        <img
-          src={logo.src}
-          alt={logo.name}
-          className="h-24 w-40 min-w-[160px] min-h-[96px] object-contain"
-        />
-      </div>
-    ))}
-  </div>
-</section>
+                {/* marquee wrapper: keep overflow-hidden so the inner track can translate */}
+                <div className="relative overflow-hidden">
+                    {/* track: contains two copies to make a continuous loop */}
+                    <div
+                        ref={marqueeRef}
+                        className="flex gap-8 whitespace-nowrap will-change-transform"
+                        aria-hidden="true"
+                    >
+                        {[...logos, ...logos].map((logo, idx) => (
+                            <div
+                                key={idx}
+                                className="flex items-center justify-center p-4 border border-red-300 rounded-xl bg-gray-50"
+                            >
+                                <img
+                                    src={logo.src}
+                                    alt={logo.name}
+                                    className="h-24 w-auto min-w-[160px] object-contain"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
 
 
 

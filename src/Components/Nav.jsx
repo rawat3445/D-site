@@ -1,8 +1,7 @@
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 
 function Nav() {
   const container = useRef();
@@ -13,28 +12,12 @@ function Nav() {
   useGSAP(() => {
     const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
-    // Step 1: Animate navbar container
-    tl.from(container.current, {
-      y: -50,
-      opacity: 0,
-      duration: 1,
-    });
-
-    // Step 2: Animate nav items with stagger
-    tl.from(
-      navItems.current,
-      {
-        y: -50,
-        opacity: 0,
-        stagger: 0.15,
-      },
-      "-=0.4" // start slightly before previous finishes
-    );
+    tl.from(container.current, { y: -50, opacity: 0, duration: 1 });
+    tl.from(navItems.current, { y: -50, opacity: 0, stagger: 0.15 }, "-=0.4");
   }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-
     if (!isOpen) {
       gsap.fromTo(
         mobileMenu.current,
@@ -55,35 +38,57 @@ function Nav() {
   ];
 
   return (
-    <nav className="h-20 bg-[#F8F5F0] shadow-md sticky top-0 z-50">
+    <nav className="h-20 bg-[#F8F5F0] shadow-md sticky top-0 z-50 overflow-x-hidden">
       <div
         ref={container}
         className="h-20 flex items-center justify-between px-6 md:px-12"
       >
-        {/* Logo / Brand */}
+        {/* Logo */}
         <h1 className="text-2xl font-bold text-[#8B5E3C]">DECORE</h1>
 
-        {/* Navigation Links */}
-        <ul className="flex space-x-8 text-lg font-medium text-[#2E2E2E]">
-          {["Home", "Collections", "Interior Ideas", "Shop", "Contact"].map(
-            (text, index) => (
-              <li
-                key={text}
-                ref={(el) => (navItems.current[index] = el)}
+        {/* Desktop Links */}
+        <ul className="hidden md:flex space-x-8 text-lg font-medium text-[#2E2E2E]">
+          {links.map((link, index) => (
+            <li key={link.name} ref={(el) => (navItems.current[index] = el)}>
+              <Link
+                to={link.path}
+                className="hover:text-[#C19A6B] transition"
               >
-                <Link
-                  to={
-                    text === "Home"
-                      ? "/"
-                      : "/" + text.toLowerCase().replace(" ", "")
-                  }
-                  className="hover:text-[#C19A6B] transition"
-                >
-                  {text}
-                </Link>
-              </li>
-            )
-          )}
+                {link.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* Mobile Hamburger */}
+        <button
+          className="md:hidden flex flex-col space-y-1"
+          onClick={toggleMenu}
+        >
+          <span className="w-6 h-0.5 bg-black"></span>
+          <span className="w-6 h-0.5 bg-black"></span>
+          <span className="w-6 h-0.5 bg-black"></span>
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      <div
+        ref={mobileMenu}
+        className="fixed top-0 right-0 w-64 h-full bg-[#F8F5F0] shadow-lg z-40 transform translate-x-full md:hidden p-6"
+      >
+        <button onClick={toggleMenu} className="mb-6">Close ✖</button>
+        <ul className="space-y-6 text-lg">
+          {links.map((link) => (
+            <li key={link.name}>
+              <Link
+                to={link.path}
+                onClick={toggleMenu}
+                className="hover:text-[#C19A6B] transition"
+              >
+                {link.name}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
     </nav>
